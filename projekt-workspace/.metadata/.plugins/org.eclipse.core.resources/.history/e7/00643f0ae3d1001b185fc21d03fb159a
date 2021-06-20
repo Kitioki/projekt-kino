@@ -1,0 +1,179 @@
+package pl.cinema.view.web;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import pl.cinema.duplex.view.AddMovieView;
+import pl.cinema.duplex.view.CreateCinemaHallView;
+import pl.cinema.duplex.view.CreateScheduleView;
+import pl.cinema.duplex.view.CreateTicketReservationView;
+import pl.cinema.duplex.view.DeleteCinemaHallView;
+import pl.cinema.duplex.view.DeleteMovieView;
+import pl.cinema.duplex.view.DeleteScheduleView;
+import pl.cinema.duplex.view.ListCinemaHallView;
+import pl.cinema.duplex.view.ListMoviesView;
+import pl.cinema.duplex.view.ListSchedulesByAirDateView;
+import pl.cinema.duplex.view.ListSchedulesView;
+import pl.cinema.duplex.view.LoginView;
+import pl.cinema.duplex.view.SendEmailReservationView;
+import pl.cinema.duplex.view.ShowPickedScheduleView;
+import pl.cinema.duplex.view.UpdateMovieView;
+import pl.cinema.duplex.view.UpdateScheduleView;
+import pl.cinema.duplex.view.ViewFactory;
+
+public class WebViewFactory implements ViewFactory{
+	private HttpServletRequest request;
+	private HttpServletResponse response;
+
+	public WebViewFactory(HttpServletRequest request, HttpServletResponse response) {
+		this.request = request;
+		this.response = response;
+	}
+
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
+	}
+
+	public HttpServletResponse getResponse() {
+		return response;
+	}
+
+	public void setResponse(HttpServletResponse response) {
+		this.response = response;
+	}
+
+	@Override
+	public ListMoviesView getListMoviesView() {
+		ListMoviesViewWeb view = new ListMoviesViewWeb();
+		view.setRequest(request);
+		view.setResponse(response);
+		return view;
+	}
+	
+	@Override
+	public AddMovieView getAddMovieView() {
+		AddMoviewViewWeb view = new AddMoviewViewWeb();
+		view.setRequest(request);
+		view.setResponse(response);
+		return view;
+	}
+
+	@Override
+	public UpdateMovieView getUpdateMovieView() {
+		UpdateMovieViewWeb view = new UpdateMovieViewWeb();
+		view.setRequest(request);
+		view.setResponse(response);
+		return view;
+	}
+	
+	@Override
+	public DeleteMovieView getDeleteMovieView() {
+		DeleteMovieViewWeb view = new DeleteMovieViewWeb();
+		view.setRequest(request);
+		view.setResponse(response);
+		return view;
+	}
+	
+	@Override
+	public ListCinemaHallView getListCinemaHallView() {
+		ListCinemaHallViewWeb view = new ListCinemaHallViewWeb();
+		view.setRequest(request);
+		view.setResponse(response);
+		return view;
+	}
+	
+	@Override
+	public CreateCinemaHallView getCreateCinemaHallView() {
+		CreateCinemaHallViewWeb view = new CreateCinemaHallViewWeb();
+		view.setRequest(request);
+		view.setResponse(response);
+		return view;
+	}
+
+	@Override
+	public DeleteCinemaHallView getDeleteCinemaHallView() {
+		DeleteCinemaHallViewWeb view = new DeleteCinemaHallViewWeb();
+		view.setRequest(request);
+		view.setResponse(response);
+		return view;
+	}
+	
+	@Override
+	public ListSchedulesView getListSchedulesView() {
+		ListSchedulesViewWeb view = new ListSchedulesViewWeb();
+		view.setRequest(request);
+		view.setResponse(response);
+		return view;
+	}
+
+	@Override
+	public CreateScheduleView getCreateScheduleView() {
+		CreateScheduleViewWeb view = new CreateScheduleViewWeb();
+		view.setRequest(request);
+		view.setResponse(response);
+		return view;
+	}
+
+	@Override
+	public UpdateScheduleView getUpdateScheduleView() {
+		UpdateScheduleViewWeb view = new UpdateScheduleViewWeb();
+		view.setRequest(request);
+		view.setResponse(response);
+		return view;
+	}
+
+	@Override
+	public DeleteScheduleView getDeleteScheduleView() {
+		DeleteScheduleViewWeb view = new DeleteScheduleViewWeb();
+		view.setRequest(request);
+		view.setResponse(response);
+		return view;
+	}
+	
+	@Override
+	public LoginView getLoginView() {
+		LoginViewWeb view = new LoginViewWeb();
+		view.setRequest(request);
+		view.setResponse(response);
+		return view;
+	}
+
+	@Override
+	public ListSchedulesByAirDateView getListSchedulesByAirDateView() {
+		ListSchedulesByAirDateViewWeb view = new ListSchedulesByAirDateViewWeb();
+		view.setRequest(request);
+		view.setResponse(response);
+		return view;
+	}
+
+	@Override
+	public ShowPickedScheduleView getShowPickedScheduleView() {
+		ShowPickedScheduleViewWeb view = new ShowPickedScheduleViewWeb();
+		view.setRequest(request);
+		view.setResponse(response);
+		return view;
+	}
+
+	@Override
+	public CreateTicketReservationView getCreateTicketReservationView() {
+		CreateTicketReservationViewWeb view = new CreateTicketReservationViewWeb();
+		view.setRequest(request);
+		view.setResponse(response);
+		return view;
+		
+	}
+	
+	@Override
+	public SendEmailReservationView getSendEmailReservationView() {
+		SendEmailReservationViewWeb view = new SendEmailReservationViewWeb();
+		view.setRequest(request);
+		view.setResponse(response);
+		return view;
+		
+	}
+	
+}

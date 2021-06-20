@@ -1,0 +1,61 @@
+package pl.cinema.action.cinema;
+
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import pl.cinema.action.Action;
+import pl.cinema.config.Context;
+import pl.cinema.duplex.model.CinemaHall;
+import pl.cinema.duplex.model.Reservation;
+import pl.cinema.duplex.model.Schedule;
+import pl.cinema.duplex.model.Seet;
+import pl.cinema.duplex.service.CinemaHallService;
+import pl.cinema.duplex.service.ReservationService;
+import pl.cinema.duplex.service.ScheduleService;
+import pl.cinema.duplex.view.ShowPickedScheduleView;
+
+public class ShowPickedSchedule implements Action {
+	private String displayName = "Wybrany film";
+	private String actionName = "showPickedSchedule";
+	private ScheduleService scheduleService;
+	private ReservationService reservationService;
+	private CinemaHallService cinemaHallService;
+	private ShowPickedScheduleView view;
+	
+	public ShowPickedSchedule(Context context) {
+		this.view = context.getViewFactory().getShowPickedScheduleView();
+		scheduleService = new ScheduleService();
+		reservationService = new ReservationService();
+		cinemaHallService = new CinemaHallService();
+	}
+	@Override
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	@Override
+	public String getName() {
+		return actionName;
+	}
+
+	@Override
+	public void execute() {
+		int scheduleId = view.getScheduleId();
+		Schedule schedule = scheduleService.getSchedulesById(scheduleId);
+		Map<CinemaHall, List<Seet>> cinemaHallsWithSeet = cinemaHallService.getCinemaHalls();
+		List<Seet> seets = cinemaHallsWithSeet.get(schedule.getCinemaHall());
+		Map<String, List<Seet>> seetsPerRow = convertSeetsToSeetsPerRow(seets);
+		List<Reservation> reservations = reservationService.getReservationBySchedule(schedule);
+		view.display(schedule, reservations, seetsPerRow);
+	}
+	private Map<String, List<Seet>> convertSeetsToSeetsPerRow(List<Seet> seets) {
+		Map<String, List<Seet>> seetsPerRow = new LinkedHashMap<>();
+		for(Seet seet : seets) {
+			seetsPerRow.computeIfAbsent(String.valueOf(seet.getRow()), k -> new LinkedList<>()).add(seet);
+		}
+		return seetsPerRow;
+	}
+
+}

@@ -1,0 +1,106 @@
+package pl.cinema.duplex.config;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import pl.cinema.action.Action;
+import pl.cinema.action.AdminAction;
+import pl.cinema.action.admin.CreateCinemaHall;
+import pl.cinema.action.admin.CreateMovie;
+import pl.cinema.action.admin.CreateSchedule;
+import pl.cinema.action.admin.DeleteCinemaHall;
+import pl.cinema.action.admin.DeleteMovie;
+import pl.cinema.action.admin.DeleteSchedule;
+import pl.cinema.action.admin.ListCinemaHalls;
+import pl.cinema.action.admin.ListMovies;
+import pl.cinema.action.admin.ListSchedules;
+import pl.cinema.action.admin.LoginAction;
+import pl.cinema.action.admin.UpdateMovie;
+import pl.cinema.action.admin.UpdateSchedule;
+import pl.cinema.action.cinema.CreateTicketReservation;
+import pl.cinema.action.cinema.ListSchedulesByAirDate;
+import pl.cinema.action.cinema.SendEmailReservation;
+import pl.cinema.action.cinema.ShowPickedSchedule;
+import pl.cinema.duplex.view.ViewFactory;
+import pl.cinema.duplex.view.web.WebViewFactory;
+
+public class Context {
+	private ViewFactory viewFactory;
+	
+	private Context() {};
+	
+	public static Context withWebUI(HttpServletRequest request, HttpServletResponse response) {
+		Context context = new Context();
+		context.viewFactory = new WebViewFactory(request, response);
+		return context;
+				
+	}
+	
+	public ViewFactory getViewFactory() {
+		return viewFactory;
+	}
+
+	public void setViewFactory(ViewFactory viewFactory) {
+		this.viewFactory = viewFactory;
+	}
+	
+	public Action getAction(String name) {
+		Action action = getActions().get(name);
+		return action;
+	}
+	
+	public AdminAction getAdminAction(String name) {
+		return getAdminActions().get(name);
+	}
+	
+	public Map<String, Action> getActions(){
+		ListSchedulesByAirDate listSchedulesByAirDate = new ListSchedulesByAirDate(this);
+		ShowPickedSchedule showPickedSchedule = new ShowPickedSchedule(this);
+		CreateTicketReservation createTicketReservation = new CreateTicketReservation(this);
+		SendEmailReservation sendEmailReservation = new SendEmailReservation(this);
+			
+				
+		Map<String, Action> actionMap = new HashMap<>();
+		actionMap.put(listSchedulesByAirDate.getName(), listSchedulesByAirDate);
+		actionMap.put(showPickedSchedule.getName(), showPickedSchedule);
+		actionMap.put(createTicketReservation.getName(), createTicketReservation);
+		actionMap.put(sendEmailReservation.getName(), sendEmailReservation);
+		return actionMap;
+	}
+	
+	public Map<String, AdminAction> getAdminActions() {
+		AdminAction listMovies = new ListMovies(this);
+		AdminAction createMovie = new CreateMovie(this);
+		AdminAction updateMovie = new UpdateMovie(this);
+		AdminAction deleteMovie = new DeleteMovie(this);
+		AdminAction listCinemaHalls = new ListCinemaHalls(this);
+		AdminAction createCinemaHall = new CreateCinemaHall(this);
+		AdminAction deleteCinemaHall = new DeleteCinemaHall(this);
+		AdminAction listSchedules = new ListSchedules(this);
+		AdminAction createSchedule = new CreateSchedule(this);
+		AdminAction deleteSchedule = new DeleteSchedule(this);
+		AdminAction updateSchedule = new UpdateSchedule(this);
+		
+		Map<String, AdminAction> actionMap = new HashMap<>();
+		actionMap.put(listMovies.getName(), listMovies);
+		actionMap.put(createMovie.getName(), createMovie);
+		actionMap.put(updateMovie.getName(), updateMovie);
+		actionMap.put(deleteMovie.getName(), deleteMovie);
+		actionMap.put(listCinemaHalls.getName(), listCinemaHalls);
+		actionMap.put(createCinemaHall.getName(), createCinemaHall);
+		actionMap.put(deleteCinemaHall.getName(), deleteCinemaHall);
+		actionMap.put(listSchedules.getName(), listSchedules);
+		actionMap.put(createSchedule.getName(), createSchedule);
+		actionMap.put(deleteSchedule.getName(), deleteSchedule);
+		actionMap.put(updateSchedule.getName(), updateSchedule);
+		return actionMap;
+	}
+
+	public AdminAction loginAction() {
+		AdminAction loginAction = new LoginAction(this);
+		return loginAction;
+	}
+}

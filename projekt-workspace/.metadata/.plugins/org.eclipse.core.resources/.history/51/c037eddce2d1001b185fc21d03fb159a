@@ -1,0 +1,59 @@
+package pl.cinema.duplex.servlet;
+
+import java.io.IOException;
+import java.util.Optional;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import pl.cinema.action.Action;
+import pl.cinema.duplex.config.Context;
+import pl.cinema.duplex.repository.EntityManagerUtility;
+
+/**
+ * Servlet implementation class DispatcherServlet
+ */
+@WebServlet(name = "/kino", urlPatterns = "/kino")
+public class DispatcherServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	
+	private Context context;
+	
+	@Override
+    public void init() throws ServletException {
+		EntityManagerUtility.init();
+		super.init();
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
+		if (request.getParameterMap().isEmpty()) {
+			request.getRequestDispatcher("/index.jsp").forward(request, response);
+		} else {
+			this.context = Context.withWebUI(request, response);
+			String actionName = request.getParameter("action");
+			if (Optional.ofNullable(actionName).isPresent()) {
+				Action action = context.getAction(actionName);
+				if (Optional.ofNullable(action).isPresent()) {
+					action.execute();
+				} else {
+					request.setAttribute("errorMessage", "Action not found!");
+					request.getRequestDispatcher("/error.jsp").forward(request, response);
+				}
+			}
+		}
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
+}

@@ -1,0 +1,19 @@
+package pl.cinema.duplex.service;
+
+import javax.persistence.NoResultException;
+
+import pl.cinema.model.User;
+import pl.cinema.repository.UserRepository;
+
+public class LoginService {
+
+	private UserRepository userRepository;
+	
+	public LoginService() {
+		this.userRepository = new UserRepository();
+	}
+	
+	public User login(String login, String password) throws NoResultException {
+		return userRepository.getUser(login, password);
+	}
+}

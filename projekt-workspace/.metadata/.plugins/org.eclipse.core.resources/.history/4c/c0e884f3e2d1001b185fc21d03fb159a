@@ -1,0 +1,51 @@
+package pl.cinema.action.admin;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+import pl.cinema.action.AdminAction;
+import pl.cinema.config.Context;
+import pl.cinema.duplex.service.MovieService;
+import pl.cinema.duplex.view.AddMovieView;
+import pl.cinema.model.Movie;
+
+public class CreateMovie implements AdminAction {
+	private String displayName = "Dodaj film";
+	private String actionName = "createMovie";
+	private MovieService movieService;
+	private AddMovieView view;
+	
+	public CreateMovie(Context context) {
+		this.movieService = new MovieService();
+		this.view = context.getViewFactory().getAddMovieView();
+	}
+	
+	@Override
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	@Override
+	public String getName() {
+		return actionName;
+	}
+
+	@Override
+	public void execute() {
+		String movieName = view.getMovieName();
+		String movieGenre = view.getMovieGenre();
+		String movieDate = view.getMovieDate();
+		Movie movie = new Movie();
+		movie.setName(movieName);
+		movie.setGenre(movieGenre); 
+		try {
+			movie.setRelease(new SimpleDateFormat("yyyy-MM-dd").parse(movieDate));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		movieService.addMovie(movie);
+		
+		view.display();
+	}
+
+}

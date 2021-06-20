@@ -1,0 +1,37 @@
+package pl.cinema.action.admin;
+
+import pl.cinema.action.AdminAction;
+import pl.cinema.duplex.config.Context;
+import pl.cinema.duplex.service.MovieService;
+import pl.cinema.duplex.view.UpdateMovieView;
+
+public class DeleteMovie  implements AdminAction {
+	private String displayName = "Usuñ film";
+	private String actionName = "deleteMovie";
+	private MovieService movieService;
+	private UpdateMovieView view;
+	private Context context;
+	
+	public DeleteMovie(Context context) {
+		this.context = context;
+		this.movieService = new MovieService();
+		this.view = this.context.getViewFactory().getUpdateMovieView();
+	}
+	
+	@Override
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	@Override
+	public String getName() {
+		return actionName;
+	}
+
+	@Override
+	public void execute() {
+		String movieId = view.getMovieId();
+		movieService.deleteMovie(Integer.valueOf(movieId));
+		view.display();
+	}
+}

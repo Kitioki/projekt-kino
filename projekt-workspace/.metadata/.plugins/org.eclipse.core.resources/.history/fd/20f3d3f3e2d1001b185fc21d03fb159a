@@ -1,0 +1,64 @@
+package pl.cinema.action.admin;
+
+import java.sql.Timestamp;
+
+import pl.cinema.action.AdminAction;
+import pl.cinema.config.Context;
+import pl.cinema.duplex.service.CinemaHallService;
+import pl.cinema.duplex.service.MovieService;
+import pl.cinema.duplex.service.ScheduleService;
+import pl.cinema.duplex.view.UpdateScheduleView;
+import pl.cinema.model.CinemaHall;
+import pl.cinema.model.Movie;
+import pl.cinema.model.Schedule;
+
+public class UpdateSchedule implements AdminAction {
+	private String displayName = "Edytuj seans";
+	private String actionName = "updateSchedule";
+	private ScheduleService scheduleService;
+	private MovieService movieService;
+	private CinemaHallService cinemaHallService;
+	private UpdateScheduleView view;
+	
+	public UpdateSchedule(Context context) {
+		this.scheduleService = new ScheduleService();
+		this.movieService = new MovieService();
+		this.cinemaHallService = new CinemaHallService();
+		this.view = context.getViewFactory().getUpdateScheduleView();
+	}
+	
+	@Override
+	public String getDisplayName() {
+		// TODO Auto-generated method stub
+		return displayName;
+	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return actionName;
+	}
+
+	@Override
+	public void execute() {
+		int scheduleId = view.getScheduleId();
+		int movieId = view.getMovieId();
+		int cinemaHallId = view.getCinemaHallId();
+		Timestamp airDate = view.getAirDate();
+		
+		Movie movie = movieService.getMovieById(movieId);
+		CinemaHall cinemaHall = cinemaHallService.getCinemaHallById(cinemaHallId);
+		if(movie != null && cinemaHall != null) {
+		Schedule schedule = new Schedule();
+		schedule.setId(scheduleId);
+		schedule.setMovie(movie);
+		schedule.setCinemaHall(cinemaHall);
+		schedule.setAirDate(airDate);
+		scheduleService.updateSchedule(schedule);
+		view.display();
+		} else {
+			view.displayError("Movie or Cinema hall not found!");
+		}
+	}
+
+}

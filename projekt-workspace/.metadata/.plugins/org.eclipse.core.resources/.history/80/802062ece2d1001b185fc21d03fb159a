@@ -1,0 +1,67 @@
+package pl.cinema.duplex.servlet;
+
+import java.io.IOException;
+import java.util.Optional;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import pl.cinema.action.AdminAction;
+import pl.cinema.config.Context;
+import pl.cinema.duplex.repository.EntityManagerUtility;
+
+/**
+ * Servlet implementation class DispatcherServlet
+ */
+@WebServlet(name = "/admin", urlPatterns = "/admin")
+public class AdminServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	
+	private Context context;
+	
+	@Override
+    public void init() throws ServletException {
+		EntityManagerUtility.init();
+		super.init();
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
+		HttpSession session = request.getSession();
+		this.context = Context.withWebUI(request, response);
+		if (Optional.ofNullable(session.getAttribute("userId")).isPresent()) {
+			if (request.getParameterMap().isEmpty()) {
+				request.getRequestDispatcher("/admin.jsp").forward(request, response);
+			} else {
+				this.context = Context.withWebUI(request, response);
+				String actionName = request.getParameter("action");
+				if (Optional.ofNullable(actionName).isPresent()) {
+					AdminAction action = context.getAdminAction(actionName);
+					if (Optional.ofNullable(action).isPresent()) {
+						action.execute();
+					} else {
+						request.getRequestDispatcher("/adminError.jsp").forward(request, response);
+					}
+				}
+			}
+		} else if("login".equals(request.getParameter("action"))) {
+			context.loginAction().execute();
+		} else {
+			request.getRequestDispatcher("/login.jsp").forward(request, response);
+		}
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
+}

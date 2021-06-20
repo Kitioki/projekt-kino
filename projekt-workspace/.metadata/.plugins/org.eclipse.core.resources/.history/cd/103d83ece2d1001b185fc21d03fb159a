@@ -1,0 +1,58 @@
+package pl.cinema.duplex.service;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import pl.cinema.duplex.repository.ReservationRepository;
+import pl.cinema.duplex.repository.ScheduleRepository;
+import pl.cinema.duplex.repository.SeetRepository;
+import pl.cinema.model.Reservation;
+import pl.cinema.model.Schedule;
+import pl.cinema.model.Seet;
+
+public class ReservationService {
+
+	private ReservationRepository reservationRepository;
+	private ScheduleRepository scheduleRepository;
+	private SeetRepository seetRepository;
+	
+	public ReservationService() {
+		this.scheduleRepository = new ScheduleRepository();
+		this.reservationRepository = new ReservationRepository();
+		this.seetRepository = new SeetRepository();
+	}
+	
+	public List<Reservation> getReservationBySchedule(Schedule schedule) {
+		return reservationRepository.getReservationByScheduleId(schedule.getId());
+	}
+
+	public Reservation createReservation(int scheduleId, int[] seetIds) {
+		Schedule schedule = scheduleRepository.getScheduleById(scheduleId);
+		List<Seet> seets = new LinkedList<>();
+		for(int i = 0; i < seetIds.length; i++) {
+			seets.add(seetRepository.getSeetById(seetIds[i]));
+		}
+		
+		Reservation reservation = new Reservation();
+		reservation.setReservationNumber(generateReservationNumber());
+		reservation.setSchedule(schedule);
+		reservation.setSeets(seets);
+		Reservation savedReservation = reservationRepository.createReservation(reservation);
+		return savedReservation;
+	}
+	
+	public String generateReservationNumber() {
+		int randomReservationNumber = generateRandomNumberInRange(1000, 9999999);
+		return String.valueOf(randomReservationNumber);
+				
+	}
+	
+	public int generateRandomNumberInRange(int min, int max) {
+	    return (int) ((Math.random() * (max - min)) + min);
+	}
+
+	public Reservation getReservationById(int reservationId) {
+		return reservationRepository.getReservationById(reservationId);
+	}
+
+}

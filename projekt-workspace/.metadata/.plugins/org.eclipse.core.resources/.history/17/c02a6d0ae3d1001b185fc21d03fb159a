@@ -1,0 +1,11 @@
+package pl.cinema.duplex.view;
+
+import java.util.List;
+import java.util.Map;
+
+import pl.cinema.model.CinemaHall;
+import pl.cinema.model.Seet;
+
+public interface ListCinemaHallView {
+	void display(Map<CinemaHall, List<Seet>> movies);
+}

@@ -1,0 +1,10 @@
+package pl.cinema.duplex.view;
+
+import pl.cinema.model.Reservation;
+
+public interface CreateTicketReservationView {
+
+	int[] getSeetIds();
+	void display(Reservation reservation);
+	int getScheduleId();
+}

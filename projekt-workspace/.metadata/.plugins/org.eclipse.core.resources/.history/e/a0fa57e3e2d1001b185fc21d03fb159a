@@ -1,0 +1,46 @@
+package pl.cinema.action.admin;
+
+import javax.persistence.NoResultException;
+
+import pl.cinema.action.AdminAction;
+import pl.cinema.config.Context;
+import pl.cinema.duplex.model.User;
+import pl.cinema.duplex.service.LoginService;
+import pl.cinema.duplex.view.LoginView;
+
+public class LoginAction implements AdminAction {
+
+	private String displayName = "Logowanie";
+	private String actionName = "login";
+	private LoginView view;
+	private LoginService service;
+	
+	public LoginAction(Context context) {
+		this.view = context.getViewFactory().getLoginView();
+		this.service = new LoginService();
+	}
+	
+	@Override
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	@Override
+	public String getName() {
+		return actionName;
+	}
+
+	@Override
+	public void execute() {
+		String login = view.getLogin();
+		String password = view.getPassword();
+		try {
+		User user = service.login(login, password);
+		view.setUserId(user.getId());
+		view.display();
+		} catch (NoResultException ex) {
+			view.error("Niepoprawne dane logowania");
+		}
+	}
+
+}

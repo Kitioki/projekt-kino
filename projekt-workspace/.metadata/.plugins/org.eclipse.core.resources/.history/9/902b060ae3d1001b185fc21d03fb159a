@@ -1,0 +1,47 @@
+package pl.cinema.view.web;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import pl.cinema.duplex.view.DeleteMovieView;
+
+public class DeleteMovieViewWeb implements DeleteMovieView {
+	
+	private HttpServletRequest request;
+	private HttpServletResponse response;
+
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
+	}
+
+	public HttpServletResponse getResponse() {
+		return response;
+	}
+
+	public void setResponse(HttpServletResponse response) {
+		this.response = response;
+	}
+
+
+	@Override
+	public String getMovieId() {
+		// TODO Auto-generated method stub
+		return request.getParameter("id");
+	}
+
+	@Override
+	public void display() {
+		try {
+			request.getRequestDispatcher("/admin?action=listMovies").forward(request, response);
+		} catch (ServletException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+}

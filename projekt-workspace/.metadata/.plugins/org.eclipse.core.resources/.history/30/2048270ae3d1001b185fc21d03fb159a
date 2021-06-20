@@ -1,0 +1,66 @@
+package pl.cinema.view.web;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import pl.cinema.duplex.view.LoginView;
+
+public class LoginViewWeb implements LoginView{
+	private HttpServletRequest request;
+	private HttpServletResponse response;
+
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
+	}
+
+	public HttpServletResponse getResponse() {
+		return response;
+	}
+
+	public void setResponse(HttpServletResponse response) {
+		this.response = response;
+	}
+
+	@Override
+	public String getLogin() {
+		return request.getParameter("login");
+	}
+
+	@Override
+	public String getPassword() {
+		return request.getParameter("password");
+	}
+
+	@Override
+	public void setUserId(int id) {
+		request.getSession().setAttribute("userId", id);
+	}
+
+	@Override
+	public void display() {
+		try {
+			request.setAttribute("error", false);
+			request.getRequestDispatcher("/admin?action=listMovies").forward(request, response);
+		} catch (ServletException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void error(String string) {
+		try {
+			System.out.println("TESTINGERROR");
+			request.setAttribute("error", true);
+			request.getRequestDispatcher("/login.jsp").forward(request, response);
+		} catch (ServletException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+}

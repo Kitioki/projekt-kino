@@ -1,0 +1,35 @@
+package pl.cinema.duplex.service;
+
+import java.util.List;
+
+import pl.cinema.duplex.repository.MovieRepository;
+import pl.cinema.model.Movie;
+
+public class MovieService {
+
+	private MovieRepository repository;
+	
+	public MovieService() {
+		this.repository = new MovieRepository();
+	}
+	
+	public void addMovie(Movie movie) {
+		repository.addMovie(movie);
+	}
+	
+	public List<Movie> getMovies() {
+		return repository.getMovies();
+	}
+	
+	public void updateMovie(Movie movie) {
+		repository.updateMovie(movie);
+	}
+
+	public void deleteMovie(int id) {
+		repository.deleteMovie(id);
+	}
+
+	public Movie getMovieById(int id) {
+		return repository.getMovie(id);
+	}
+}

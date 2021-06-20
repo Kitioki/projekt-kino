@@ -1,0 +1,38 @@
+package pl.cinema.duplex.action.admin;
+
+import pl.cinema.action.AdminAction;
+import pl.cinema.duplex.config.Context;
+import pl.cinema.duplex.service.CinemaHallService;
+import pl.cinema.duplex.view.DeleteCinemaHallView;
+
+public class DeleteCinemaHall implements AdminAction {
+	private String displayName = "Usuñ sale";
+	private String actionName = "deleteCinemaHall";
+	private CinemaHallService cinemaHallService;
+	private DeleteCinemaHallView view;
+
+	public DeleteCinemaHall (Context context) {
+		cinemaHallService = new CinemaHallService();
+		this.view = context.getViewFactory().getDeleteCinemaHallView();
+	}
+	
+	@Override
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	@Override
+	public String getName() {
+		return actionName;
+	}
+
+	@Override
+	public void execute() {
+		String id = view.getCinemaHallId();
+		cinemaHallService.deleteCinemaHall(Integer.parseInt(id));
+		view.display();
+	}
+
+	
+	
+}

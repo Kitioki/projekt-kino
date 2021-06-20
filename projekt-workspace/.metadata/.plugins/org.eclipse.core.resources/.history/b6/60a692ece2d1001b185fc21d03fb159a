@@ -1,0 +1,49 @@
+package pl.cinema.duplex.repository;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
+import pl.cinema.model.Movie;
+
+public class MovieRepository {
+	
+	public void addMovie(Movie movie) {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		em.getTransaction().begin();
+		em.persist(movie);
+		em.getTransaction().commit();
+		em.clear();
+	}
+	
+	public List<Movie> getMovies() {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		List<Movie> movies= em.createQuery("SELECT e FROM Movie e", Movie.class).getResultList();
+		em.clear();
+		return movies;
+	}
+	
+	public void updateMovie(Movie movie) {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		em.getTransaction().begin();
+		em.merge(movie);
+		em.getTransaction().commit();
+		em.clear();
+	}
+	
+	public void deleteMovie(int id) {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		Movie movie = em.find(Movie.class, id);
+		em.getTransaction().begin();
+		em.remove(movie);
+		em.getTransaction().commit();
+		em.clear();
+	}
+
+	public Movie getMovie(int id) {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		Movie movie = em.find(Movie.class, id);
+		em.clear();
+		return movie;
+	}
+}

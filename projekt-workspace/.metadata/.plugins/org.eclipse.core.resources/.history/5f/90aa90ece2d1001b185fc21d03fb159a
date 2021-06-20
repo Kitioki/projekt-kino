@@ -1,0 +1,36 @@
+package pl.cinema.duplex.repository;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
+import pl.cinema.model.Reservation;
+
+public class ReservationRepository {
+	
+	public Reservation createReservation(Reservation reservation) {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		em.getTransaction().begin();
+		em.persist(reservation);
+		em.flush();
+		em.getTransaction().commit();
+		return reservation;
+	}
+
+	public Reservation getReservationById(int reservationId) {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		Reservation reservation = em.find(Reservation.class, reservationId);
+		return reservation;
+	}
+
+	public List<Reservation> getReservationByScheduleId(int id) {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		List<Reservation> reservations = em.createQuery("SELECT reservation FROM Reservation reservation where"
+				+ " reservation.schedule.id = :schedule_id", Reservation.class)
+         .setParameter("schedule_id", id)
+         .getResultList();
+		em.clear();
+		return reservations;
+	}
+	
+}

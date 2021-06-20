@@ -1,0 +1,63 @@
+package pl.cinema.action.cinema;
+
+import java.util.StringJoiner;
+
+import pl.cinema.action.Action;
+import pl.cinema.duplex.config.Context;
+import pl.cinema.duplex.model.Reservation;
+import pl.cinema.duplex.service.EmailService;
+import pl.cinema.duplex.service.ReservationService;
+import pl.cinema.duplex.view.SendEmailReservationView;
+
+public class SendEmailReservation implements Action {
+	private String displayName = "Wyslij email z rezerwacj¹";
+	private String actionName = "sendEmailReservation";
+	private EmailService emailService;
+	private ReservationService reservationService;
+	private SendEmailReservationView view;
+	
+	public SendEmailReservation(Context context) {
+		this.view = context.getViewFactory().getSendEmailReservationView();
+		emailService = new EmailService();
+		reservationService = new ReservationService();
+	}
+	
+	@Override
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	@Override
+	public String getName() {
+		return actionName;
+	}
+
+	@Override
+	public void execute() {
+		System.out.println("JESTEM W EXECUTE");
+		int reservationId = view.getReservationId();
+		String receiverEmail = view.getEmailAdress();
+		Reservation reservation = reservationService.getReservationById(reservationId);
+		emailService.sendEmail(receiverEmail, buildMailSubject(reservation), buildMailMessage(reservation));
+		view.display();
+	}
+
+	private String buildMailSubject(Reservation reservation) {
+		return "KINO, REZERWACJA NR "+reservation.getReservationNumber();
+	}
+
+	private String buildMailMessage(Reservation reservation) {
+		StringJoiner joiner = new StringJoiner("\n");
+		joiner.add("NR Rezerwacji: "+reservation.getReservationNumber());
+		joiner.add("Film: "+ reservation.getSchedule().getMovie().getName());
+		joiner.add("Termin: "+reservation.getSchedule().getAirDate());
+		joiner.add("Sala: "+reservation.getSchedule().getCinemaHall().getName());
+		StringJoiner seets = new StringJoiner(", ");
+		reservation.getSeets()
+		.forEach(seet ->
+		seets.add(String.valueOf(seet.getRow())+String.valueOf(seet.getNumber())
+		));
+		joiner.add("Miejsca: "+seets.toString());
+		return joiner.toString();
+	}
+}

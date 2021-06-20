@@ -1,0 +1,57 @@
+package pl.cinema.view.web;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import pl.cinema.duplex.view.CreateTicketReservationView;
+import pl.cinema.model.Reservation;
+
+public class CreateTicketReservationViewWeb implements CreateTicketReservationView {
+	
+	private HttpServletRequest request;
+	private HttpServletResponse response;
+
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
+	}
+
+	public HttpServletResponse getResponse() {
+		return response;
+	}
+
+	public void setResponse(HttpServletResponse response) {
+		this.response = response;
+	}
+	
+	@Override
+	public int[] getSeetIds() {
+		String[] seetIds = request.getParameterValues("seets");
+		int[] seetIdsInt = new int[seetIds.length];
+		for(int i = 0; i<seetIds.length; i++) {
+			seetIdsInt[i] = Integer.parseInt(seetIds[i]);
+		}
+		return seetIdsInt;
+	}
+
+	public int getScheduleId() {
+		return Integer.parseInt(request.getParameter("scheduleId"));
+	}
+	@Override
+	public void display(Reservation reservation) {
+		try {
+			request.setAttribute("reservation", reservation);
+			request.getRequestDispatcher("/reservationCompleted.jsp").forward(request, response);
+		} catch (ServletException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+
+}

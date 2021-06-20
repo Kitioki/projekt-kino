@@ -1,0 +1,15 @@
+package pl.cinema.duplex.view;
+
+import java.util.List;
+import java.util.Map;
+
+import pl.cinema.model.Reservation;
+import pl.cinema.model.Schedule;
+import pl.cinema.model.Seet;
+
+public interface ShowPickedScheduleView {
+
+	int getScheduleId();
+	void display(Schedule schedule, List<Reservation> reservations, Map<String, List<Seet>> seetsPerRow);
+	
+}

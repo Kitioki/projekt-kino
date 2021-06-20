@@ -1,0 +1,9 @@
+package pl.cinema.duplex.view;
+
+import java.util.List;
+
+import pl.cinema.model.Movie;
+
+public interface ListMoviesView {
+	void display(List<Movie> movies);
+}

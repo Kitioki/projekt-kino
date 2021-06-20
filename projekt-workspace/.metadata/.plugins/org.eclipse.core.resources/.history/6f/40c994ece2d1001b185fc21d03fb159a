@@ -1,0 +1,14 @@
+package pl.cinema.duplex.repository;
+
+import javax.persistence.EntityManager;
+
+import pl.cinema.model.Seet;
+
+public class SeetRepository {
+
+	public Seet getSeetById(int seetId) {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		Seet seet = em.find(Seet.class, seetId);
+		return seet;
+	}
+}

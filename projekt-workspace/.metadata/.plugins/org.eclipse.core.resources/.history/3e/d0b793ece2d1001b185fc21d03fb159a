@@ -1,0 +1,21 @@
+package pl.cinema.duplex.repository;
+
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+
+import pl.cinema.model.User;
+
+public class UserRepository {
+
+	public User getUser(String login, String password) throws NoResultException {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		User user = (User) em.createQuery("SELECT user FROM User user where"
+				+ " user.login = :login AND user.password = :password")
+         .setParameter("login", login)
+         .setParameter("password", password)
+         .getSingleResult();
+		em.clear();
+		return user;
+	}
+	
+}

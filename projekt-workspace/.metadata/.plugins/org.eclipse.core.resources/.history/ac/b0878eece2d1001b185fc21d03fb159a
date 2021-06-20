@@ -1,0 +1,70 @@
+package pl.cinema.duplex.repository;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
+import java.util.TreeMap;
+
+import javax.persistence.EntityManager;
+
+import pl.cinema.model.CinemaHall;
+import pl.cinema.model.Seet;
+
+public class CinemaHallRepository {
+
+	public Map<CinemaHall, List<Seet>> getCinemaHalls() {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		List<CinemaHall> cinemaHalls = em.createQuery("SELECT e FROM CinemaHall e", CinemaHall.class).getResultList();
+		List<Seet> seets = em.createQuery("SELECT e FROM Seet e", Seet.class).getResultList();
+		
+		Map<CinemaHall, List<Seet>> cinemaHallMap = new TreeMap<>();
+		for (CinemaHall cinemaHall : cinemaHalls) {
+			List<Seet> seetsPerCinemaHall = new ArrayList<>();
+			for (Seet seet : seets) {
+				if (seet.getCinemaHall().getId() == cinemaHall.getId()) {
+					seetsPerCinemaHall.add(seet);
+				}
+			}
+			cinemaHallMap.put(cinemaHall, seetsPerCinemaHall);
+		}
+		em.clear();
+		return cinemaHallMap;
+	}
+
+	public void addCinemaHall(CinemaHall cinemaHall, List<Seet> seets) {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		em.getTransaction().begin();
+		em.persist(cinemaHall);
+		em.flush();
+		em.getTransaction().commit();
+		
+		String queryToBuild = "INSERT INTO seet VALUES ";
+		StringJoiner joiner = new StringJoiner(",");
+		for(int i = 0; i < seets.size(); i++) {
+			joiner.add("(0,"+"'"+seets.get(i).getRow()+"',"+seets.get(i).getNumber()+","+seets.get(i).getCinemaHall().getId()+")");
+		}
+		final String query = queryToBuild + joiner.toString();
+		em.getTransaction().begin();
+		em.createNativeQuery(query)
+		      .executeUpdate();
+		em.getTransaction().commit();
+		em.clear();
+	}
+
+	public void deleteCinemaHall(int id) {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		CinemaHall cinemaHall = em.find(CinemaHall.class, id);
+		em.getTransaction().begin();
+		em.remove(cinemaHall);
+		em.getTransaction().commit();
+		em.clear();
+	}
+
+	public CinemaHall getCinemaHall(int id) {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		CinemaHall cinemaHall = em.find(CinemaHall.class, id);
+		em.clear();
+		return cinemaHall;
+	}
+}

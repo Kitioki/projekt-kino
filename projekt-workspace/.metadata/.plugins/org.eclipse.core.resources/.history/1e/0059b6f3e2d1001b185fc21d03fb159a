@@ -1,0 +1,42 @@
+package pl.cinema.action.cinema;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+
+import pl.cinema.action.Action;
+import pl.cinema.config.Context;
+import pl.cinema.duplex.service.ScheduleService;
+import pl.cinema.duplex.view.ListSchedulesByAirDateView;
+import pl.cinema.model.Movie;
+import pl.cinema.model.Schedule;
+
+public class ListSchedulesByAirDate implements Action {
+	private String displayName = "Wyœwietl filmy emitowane w danym dniu";
+	private String actionName = "listSchedulesByAirDate";
+	private ScheduleService scheduleService;
+	private ListSchedulesByAirDateView view;
+	
+	public ListSchedulesByAirDate(Context context) {
+		this.view = context.getViewFactory().getListSchedulesByAirDateView();
+		this.scheduleService = new ScheduleService();
+	}
+	
+	@Override
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	@Override
+	public String getName() {
+		return actionName;
+	}
+
+	@Override
+	public void execute() {
+		LocalDate date = view.getAirDate();
+		Map<Movie, List<Schedule>> schedulesByMovie = scheduleService.getSchedulesByAirDate(date);
+		view.display(schedulesByMovie);
+	}
+
+}

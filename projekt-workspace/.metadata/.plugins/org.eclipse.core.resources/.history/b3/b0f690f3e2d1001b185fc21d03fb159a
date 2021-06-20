@@ -1,0 +1,40 @@
+package pl.cinema.action.cinema;
+
+import pl.cinema.action.Action;
+import pl.cinema.config.Context;
+import pl.cinema.duplex.service.ReservationService;
+import pl.cinema.duplex.view.CreateTicketReservationView;
+import pl.cinema.model.Reservation;
+
+public class CreateTicketReservation implements Action {
+	private static final String displayName = "Rezerwuj";
+	private static final String actionName = "createTicketReservation";
+	private CreateTicketReservationView view;
+	private ReservationService reservationService;
+	
+	public CreateTicketReservation(Context context) {
+		this.view = context.getViewFactory().getCreateTicketReservationView();
+		this.reservationService = new ReservationService();
+	}
+
+	@Override
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	@Override
+	public String getName() {
+		return actionName;
+	}
+
+	@Override
+	public void execute() {
+		int[] seetIds = view.getSeetIds();
+		int scheduleId = view.getScheduleId();
+		
+		Reservation reservation = reservationService.createReservation(scheduleId, seetIds);
+		
+		view.display(reservation);
+	}
+
+}

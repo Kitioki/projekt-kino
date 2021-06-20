@@ -1,0 +1,44 @@
+package pl.cinema.view.web;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import pl.cinema.duplex.view.ListMoviesView;
+import pl.cinema.model.Movie;
+
+public class ListMoviesViewWeb implements ListMoviesView {
+
+	private HttpServletRequest request;
+	private HttpServletResponse response;
+
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
+	}
+
+	public HttpServletResponse getResponse() {
+		return response;
+	}
+
+	public void setResponse(HttpServletResponse response) {
+		this.response = response;
+	}
+	
+	@Override
+	public void display(List<Movie> movies) {
+		request.setAttribute("movies", movies);
+		try {
+			request.getRequestDispatcher("/listmovies.jsp").forward(request, response);
+		} catch (ServletException | IOException e) {
+			System.out.println("SERVLET EXCEPTION");
+		}
+	}
+
+}

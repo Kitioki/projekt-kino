@@ -1,0 +1,50 @@
+package pl.cinema.view.web;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import pl.cinema.duplex.view.ListSchedulesByAirDateView;
+import pl.cinema.model.Movie;
+import pl.cinema.model.Schedule;
+
+public class ListSchedulesByAirDateViewWeb implements ListSchedulesByAirDateView {
+	private HttpServletRequest request;
+	private HttpServletResponse response;
+
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
+	}
+
+	public HttpServletResponse getResponse() {
+		return response;
+	}
+
+	public void setResponse(HttpServletResponse response) {
+		this.response = response;
+	}
+	
+	@Override
+	public void display(Map<Movie, List<Schedule>> schedules) {
+		request.setAttribute("schedules", schedules);
+		try {
+			request.getRequestDispatcher("/showMovies.jsp").forward(request, response);
+		} catch (ServletException | IOException e) {
+			System.out.println("SERVLET EXCEPTION");
+		}
+	}
+
+	@Override
+	public LocalDate getAirDate() {
+		return LocalDate.parse(request.getParameter("date"));
+	}
+}

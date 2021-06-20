@@ -1,0 +1,3 @@
+INDEX VERSION 1.4+C:\Users\Piotrek\Desktop\KINO DUPLEX\projekt-workspace\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+2188924475.index
+3270205158.index

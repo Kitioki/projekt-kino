@@ -1,0 +1,74 @@
+package pl.cinema.duplex.repository;
+
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
+import pl.cinema.model.Schedule;
+
+public class ScheduleRepository {
+	
+	public List<Schedule> getSchedules() {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		List<Schedule> schedules = em.createQuery("SELECT e FROM Schedule e", Schedule.class).getResultList();
+		return schedules;
+	}
+
+	public void addSchedule(Schedule schedule) {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		em.getTransaction().begin();
+		em.persist(schedule);
+		em.flush();
+		em.getTransaction().commit();
+		em.clear();
+	}
+
+	public void deleteSchedule(int id) {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		Schedule schedule = em.find(Schedule.class, id);
+		em.getTransaction().begin();
+		em.remove(schedule);
+		em.getTransaction().commit();
+		em.clear();
+	}
+
+	public void updateSchedule(Schedule schedule) {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		em.getTransaction().begin();
+		em.merge(schedule);
+		em.getTransaction().commit();
+		em.clear();
+	}
+
+	public List<Schedule> getSchedulesByAirDate(LocalDate date) {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		System.out.println(date);
+		Date startDate = Date.from(
+				LocalDate.of(
+						date.getYear(),
+						date.getMonthValue(),
+						date.getDayOfMonth()
+						).atTime(0, 0).toInstant(ZoneOffset.ofHours(1)));
+		Date endDate = Date.from(LocalDate.of(
+						date.getYear(),
+						date.getMonthValue(),
+						date.getDayOfMonth()
+						).atTime(23, 59).toInstant(ZoneOffset.ofHours(1)));
+		List<Schedule> schedules = em.createQuery("SELECT schedule FROM Schedule schedule where schedule.airDate BETWEEN :startDate AND :endDate", Schedule.class)
+		.setParameter("startDate", startDate)
+		.setParameter("endDate", endDate)
+		.getResultList();
+		em.clear();
+		return schedules;
+	}
+
+	public Schedule getScheduleById(int scheduleId) {
+		EntityManager em = EntityManagerUtility.getEntityManager();
+		Schedule schedule = em.find(Schedule.class, scheduleId);
+		return schedule;
+	}
+
+}

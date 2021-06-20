@@ -1,0 +1,53 @@
+package pl.cinema.view.web;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import pl.cinema.duplex.view.ShowPickedScheduleView;
+import pl.cinema.model.Reservation;
+import pl.cinema.model.Schedule;
+import pl.cinema.model.Seet;
+
+public class ShowPickedScheduleViewWeb implements ShowPickedScheduleView {
+	private HttpServletRequest request;
+	private HttpServletResponse response;
+
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
+	}
+
+	public HttpServletResponse getResponse() {
+		return response;
+	}
+
+	public void setResponse(HttpServletResponse response) {
+		this.response = response;
+	}
+
+	@Override
+	public int getScheduleId() {
+		return Integer.parseInt(request.getParameter("scheduleId"));
+	}
+
+	@Override
+	public void display(Schedule schedule, List<Reservation> reservations, Map<String, List<Seet>> seetsPerRow) {
+		System.out.println("JESTEM W VIEW");
+		try {
+			request.setAttribute("schedule", schedule);
+			request.setAttribute("reservations", reservations);
+			request.setAttribute("seetsPerRow", seetsPerRow);
+			request.getRequestDispatcher("/showPickedSchedule.jsp").forward(request, response);
+		} catch (ServletException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+}

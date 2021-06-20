@@ -1,0 +1,56 @@
+package pl.cinema.action.admin;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import pl.cinema.action.AdminAction;
+import pl.cinema.duplex.config.Context;
+import pl.cinema.duplex.model.CinemaHall;
+import pl.cinema.duplex.model.Seet;
+import pl.cinema.duplex.service.CinemaHallService;
+import pl.cinema.duplex.view.CreateCinemaHallView;
+
+public class CreateCinemaHall implements AdminAction {
+	private String displayName = "Dodaj sale";
+	private String actionName = "createCinemaHall";
+	private CinemaHallService cinemaHallService;
+	private CreateCinemaHallView view;
+	
+	public CreateCinemaHall(Context context) {
+		cinemaHallService = new CinemaHallService();
+		view = context.getViewFactory().getCreateCinemaHallView();
+	}
+	
+	@Override
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	@Override
+	public String getName() {
+		return actionName;
+	}
+
+	@Override
+	public void execute() {
+		
+		CinemaHall cinemaHall = new CinemaHall();
+		cinemaHall.setName(view.getCinemaHallName());
+		
+		List<Seet> seets = new LinkedList<>();
+		for(int rows = 0; rows < view.getRows(); rows++) {
+			for(int seetsInRow = 0; seetsInRow < view.getSeetsInRow(); seetsInRow++) {
+				Seet seet = new Seet();
+				seet.setRow((char) ('A'+rows));
+				seet.setNumber(seetsInRow+1);
+				seet.setCinemaHall(cinemaHall);
+				seets.add(seet);
+			}
+		}
+		
+		
+		cinemaHallService.createCinemaHall(cinemaHall, seets);
+		view.display();
+	}
+
+}

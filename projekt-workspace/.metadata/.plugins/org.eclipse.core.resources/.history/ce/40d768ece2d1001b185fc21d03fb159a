@@ -1,0 +1,35 @@
+package pl.cinema.duplex.service;
+
+import java.util.List;
+import java.util.Map;
+
+import pl.cinema.duplex.repository.CinemaHallRepository;
+import pl.cinema.model.CinemaHall;
+import pl.cinema.model.Seet;
+
+public class CinemaHallService {
+
+	CinemaHallRepository repository;
+	
+	public CinemaHallService() {
+		repository = new CinemaHallRepository();
+	}
+	
+	public Map<CinemaHall, List<Seet>> getCinemaHalls(){
+		return repository.getCinemaHalls();
+	}
+	
+	public void createCinemaHall(CinemaHall cinemaHall, List<Seet> seets) {
+		repository.addCinemaHall(cinemaHall, seets);
+	}
+
+	public void deleteCinemaHall(int id) {
+		repository.deleteCinemaHall(id);
+	}
+
+	public CinemaHall getCinemaHallById(int cinemaHallId) {
+		// TODO Auto-generated method stub
+		return repository.getCinemaHall(cinemaHallId);
+	}
+	
+}

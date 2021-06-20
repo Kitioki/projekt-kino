@@ -1,0 +1,3 @@
+0:0:0:0:0:0:0:1 - - [23/Jan/2021:07:39:08 +0100] "GET /showMovies.jsp HTTP/1.1" 200 7559
+0:0:0:0:0:0:0:1 - - [23/Jan/2021:07:39:11 +0100] "POST /kino?action=listSchedulesByAirDate&date=2021-01-26 HTTP/1.1" 500 18103
+0:0:0:0:0:0:0:1 - - [23/Jan/2021:07:39:15 +0100] "POST /kino?action=listSchedulesByAirDate&date=2021-01-25 HTTP/1.1" 500 18103

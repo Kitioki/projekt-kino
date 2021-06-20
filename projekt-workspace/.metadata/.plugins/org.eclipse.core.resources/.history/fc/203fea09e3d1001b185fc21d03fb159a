@@ -1,0 +1,54 @@
+package pl.cinema.view.web;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import pl.cinema.duplex.view.CreateCinemaHallView;
+
+public class CreateCinemaHallViewWeb implements CreateCinemaHallView {
+	private HttpServletRequest request;
+	private HttpServletResponse response;
+
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
+	}
+
+	public HttpServletResponse getResponse() {
+		return response;
+	}
+
+	public void setResponse(HttpServletResponse response) {
+		this.response = response;
+	}
+	
+	@Override
+	public void display() {
+		try {
+			request.getRequestDispatcher("/admin?action=listCinemaHalls").forward(request, response);
+		} catch (ServletException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String getCinemaHallName() {
+		return request.getParameter("name");
+	}
+
+	@Override
+	public int getRows() {
+		return Integer.parseInt(request.getParameter("rows"));
+	}
+
+	@Override
+	public int getSeetsInRow() {
+		return Integer.parseInt(request.getParameter("seetsNumberInRow"));
+	}
+}
